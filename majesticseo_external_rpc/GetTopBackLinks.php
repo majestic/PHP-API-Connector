@@ -1,22 +1,25 @@
 <?php
 
 /*
- * Version 0.9.3
- *
- * Copyright (c) 2011, Majestic-12 Ltd
+ * Copyright 2015, Majestic-12 Ltd trading as Majestic
+ * https://majestic.com
+ * 
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *   1. Redistributions of source code must retain the above copyright
- *      notice, this list of conditions and the following disclaimer.
- *   2. Redistributions in binary form must reproduce the above copyright
- *      notice, this list of conditions and the following disclaimer in the
- *      documentation and/or other materials provided with the distribution.
- *   3. Neither the name of the Majestic-12 Ltd nor the
- *      names of its contributors may be used to endorse or promote products
- *      derived from this software without specific prior written permission.
- *
+ * 
+ *     * Redistributions of source code must retain the above copyright
+ *       notice, this list of conditions and the following disclaimer.
+ * 
+ *     * Redistributions in binary form must reproduce the above copyright
+ *       notice, this list of conditions and the following disclaimer in the
+ *       documentation and/or other materials provided with the distribution.
+ * 
+ *     * Neither the name of Majestic-12 Ltd, its trademarks, nor any contributors
+ *       to the software may be used to endorse or promote products derived from
+ *       this software without specific prior written permission.
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -74,16 +77,17 @@ fwrite(STDOUT, "\nPlease enter a URL, domain or subdomain to query:\n");
 $itemToQuery = fgets(STDIN);
 
 $parameters = array();
-$parameters["Count"] = 10;
-$parameters["item"] = $itemToQuery;
-$parameters["Mode"] = 0;
+$parameters["MaxSourceURLs"] = 10;
+$parameters["URL"] = $itemToQuery;
+$parameters["GetUrlData"] = 1;
+$parameters["MaxSourceURLsPerRefDomain"] = 1;
 $parameters["datasource"] = "fresh";
 
 $api_service = new APIService($app_api_key, $endpoint);
-$response = $api_service->executeCommand("GetBackLinkData", $parameters);
+$response = $api_service->executeCommand("GetTopBackLinks", $parameters);
 
 if($response->isOK() == "true") {
-    $results = $response->getTableForName("BackLinks");
+    $results = $response->getTableForName("URL");
     foreach($results->getTableRows() as $row) {
         fwrite(STDOUT, "\nURL: ".$row['SourceURL']);
         fwrite(STDOUT, "\nACRank: ".$row['ACRank']."\n");

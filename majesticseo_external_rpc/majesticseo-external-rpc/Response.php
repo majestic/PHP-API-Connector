@@ -1,22 +1,25 @@
 <?php
 
 /*
- * Version 0.9.3
- *
- * Copyright (c) 2011, Majestic-12 Ltd
+ * Copyright 2015, Majestic-12 Ltd trading as Majestic
+ * https://majestic.com
+ * 
  * All rights reserved.
- *
+ * 
  * Redistribution and use in source and binary forms, with or without
  * modification, are permitted provided that the following conditions are met:
- *   1. Redistributions of source code must retain the above copyright
- *      notice, this list of conditions and the following disclaimer.
- *   2. Redistributions in binary form must reproduce the above copyright
- *      notice, this list of conditions and the following disclaimer in the
- *      documentation and/or other materials provided with the distribution.
- *   3. Neither the name of the Majestic-12 Ltd nor the
- *      names of its contributors may be used to endorse or promote products
- *      derived from this software without specific prior written permission.
- *
+ * 
+ *     * Redistributions of source code must retain the above copyright
+ *       notice, this list of conditions and the following disclaimer.
+ * 
+ *     * Redistributions in binary form must reproduce the above copyright
+ *       notice, this list of conditions and the following disclaimer in the
+ *       documentation and/or other materials provided with the distribution.
+ * 
+ *     * Neither the name of Majestic-12 Ltd, its trademarks, nor any contributors
+ *       to the software may be used to endorse or promote products derived from
+ *       this software without specific prior written permission.
+ * 
  * THIS SOFTWARE IS PROVIDED BY THE COPYRIGHT HOLDERS AND CONTRIBUTORS "AS IS" AND
  * ANY EXPRESS OR IMPLIED WARRANTIES, INCLUDING, BUT NOT LIMITED TO, THE IMPLIED
  * WARRANTIES OF MERCHANTABILITY AND FITNESS FOR A PARTICULAR PURPOSE ARE
@@ -30,7 +33,7 @@
  *
  */
 
-require_once '/DataTable.php';
+require_once dirname(__FILE__).'/DataTable.php';
 
 class Response {
 
@@ -122,11 +125,11 @@ class Response {
 
     # Indicates whether the response is OK
     public function isOK() {
-        if ("OK" == $this->responseAttributes["Code"]) {
-            return "true";
+        if ("OK" == $this->responseAttributes["Code"] || "QueuedForProcessing" == $this->responseAttributes["Code"]) {
+            return true;
         }
 
-        return "false";
+        return false;
     }
 
     # Returns the response's code - "OK" represents predicted state, all else represents an error
