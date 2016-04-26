@@ -42,13 +42,13 @@ class Response {
     protected $tables;
 
     # Constructs a new instance of the Response class
-    public function __construct($xml_data = NULL, $timeout = 5) {
+    public function __construct($xml = NULL) {
         $this->responseAttributes = array();
         $this->params = array();
         $this->tables = array();
 
-        if ($xml_data != NULL) {
-            $this->importData($xml_data, $timeout);
+        if ($xml != NULL) {
+            $this->importData($xml);
         }
     }
 
@@ -66,55 +66,48 @@ class Response {
     }
 
     # Parses the response xml, storing the result internally
-    private function importData($xml_data, $timeout) {
+    private function importData($xml) {
         $reader = new XMLReader();
-        $reader->open($xml_data, "UTF-8");
+        $reader->XML($xml, "UTF-8");
         $dataTable = null;
 
-        $start = time();
-        $end = $start + $timeout;
-
         while ($reader->read()) {
-            if(time() <= $end) {
-                if($reader->nodeType == XMLREADER::ELEMENT) {
-                    switch ($reader->name) {
-                       case "Result":
-                           $this->responseAttributes["Code"] = $reader->getAttribute("Code");
-                           $this->responseAttributes["ErrorMessage"] = $reader->getAttribute("ErrorMessage");
-                           $this->responseAttributes["FullError"] = $reader->getAttribute("FullError");
-                           break;
+			if($reader->nodeType == XMLREADER::ELEMENT) {
+				switch ($reader->name) {
+				   case "Result":
+					   $this->responseAttributes["Code"] = $reader->getAttribute("Code");
+					   $this->responseAttributes["ErrorMessage"] = $reader->getAttribute("ErrorMessage");
+					   $this->responseAttributes["FullError"] = $reader->getAttribute("FullError");
+					   break;
 
-                       case "GlobalVars":
-                           if($reader->hasAttributes) {
-                               while($reader->moveToNextAttribute()) {
-                                   $this->params[$reader->name] = $reader->value;
-                               }
-                           }
-                           break;
+				   case "GlobalVars":
+					   if($reader->hasAttributes) {
+						   while($reader->moveToNextAttribute()) {
+							   $this->params[$reader->name] = $reader->value;
+						   }
+					   }
+					   break;
 
-                       case "DataTable":
-                           $dataTable = new DataTable();
-                           $dataTable->setTableName($reader->getAttribute("Name"));
-                           $dataTable->setTableHeaders($reader->getAttribute("Headers"));
+				   case "DataTable":
+					   $dataTable = new DataTable();
+					   $dataTable->setTableName($reader->getAttribute("Name"));
+					   $dataTable->setTableHeaders($reader->getAttribute("Headers"));
 
-                           while($reader->moveToNextAttribute()) {
-                               if ("Name" != $reader->name && "Headers" != $reader->name) {
-                                   $dataTable->setTableParams($reader->name, $reader->value);
-                               }
-                           }
+					   while($reader->moveToNextAttribute()) {
+						   if ("Name" != $reader->name && "Headers" != $reader->name) {
+							   $dataTable->setTableParams($reader->name, $reader->value);
+						   }
+					   }
 
-                           $this->tables[$dataTable->getTableName()] = $dataTable;
-                           break;
+					   $this->tables[$dataTable->getTableName()] = $dataTable;
+					   break;
 
-                       case "Row":
-                           $row = $reader->readString();
-                           $dataTable->setTableRow($row);
-                           break;
-                    }
-                }
-            } else {
-                $this->constructFailedResponse("ConnectionError", "Problem connecting to data source");
-            }
+				   case "Row":
+					   $row = $reader->readString();
+					   $dataTable->setTableRow($row);
+					   break;
+				}
+			}
         }
     }
 

@@ -66,10 +66,19 @@ class APIService
     
     private function executeRequest($parameters, $timeout)
     {
-        $query_string = http_build_query($parameters);
-        $xml_data = $this->endpoint."?".$query_string;
+		$options = array(
+			'http' => array(
+				'header' => "Content-type: application/x-www-form-urlencoded\r\n",
+				'method'  => 'POST',
+				'content' => http_build_query($parameters),
+				'timeout' => $timeout
+			)
+		);
+		
+		$context  = stream_context_create($options);
+		$xml = file_get_contents($this->endpoint, false, $context);
 
-        return new Response($xml_data, $timeout);
+        return new Response($xml);
     }
 }
 
