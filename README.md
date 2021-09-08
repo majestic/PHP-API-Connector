@@ -2,7 +2,7 @@ PHP-API-Connector (for PHP 7+)
 ====================
 
 Use the https://majestic.com connectors to access web data from one of the largest web indexes available. 
-The Majestic® search engine is mainly used to instantly provide Flow Metrics® which evaluate the any page on the Internet in scores between 0 and 100.
+The Majestic® search engine is mainly used to instantly provide Flow Metric® scores which evaluate the any page on the Internet in scores between 0 and 100.
  
 For set up
 ---------------
